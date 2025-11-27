@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - New User Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efeito de matriz animado no fundo */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* --- CORREÇÃO AQUI --- */
+        /* Partículas flutuantes (corrigido: animando background-position) */
+        body::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, #0ff, transparent),
+                radial-gradient(2px 2px at 60% 70%, #00ff41, transparent),
+                radial-gradient(1px 1px at 50% 50%, #0ff, transparent),
+                radial-gradient(1px 1px at 80% 10%, #00ff41, transparent);
+            background-size: 200% 200%;
+            animation: particleFloat 20s linear infinite;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        @keyframes particleFloat {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 10% 15%; }
+            100% { background-position: 0% 0%; }
+        }
+        /* --- FIM DA CORREÇÃO --- */
+
+        .register-container {
+            background: rgba(10, 14, 39, 0.95);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 40px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 65, 0.3),
+                0 0 40px rgba(0, 255, 65, 0.1),
+                inset 0 0 60px rgba(0, 255, 65, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Scrollbar customizada */
+        .register-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .register-container::-webkit-scrollbar-track {
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 10px;
+        }
+
+        .register-container::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        .register-container::before,
+        .register-container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ff;
+        }
+
+        .register-container::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .register-container::after {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+        }
+
+        h1::before {
+            content: '> ';
+            color: #00ff41;
+        }
+
+        h1::after {
+            content: ' _';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00ff41;
+            font-size: 11px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .error-message,
+        .success-message {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to   { transform: translateX(0); opacity: 1; }
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0040;
+            color: #ff0040;
+            text-shadow: 0 0 5px #ff0040;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        form p {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0ff;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px #0ff;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 20, 40, 0.6);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0ff;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 255, 0.5),
+                inset 0 0 15px rgba(0, 255, 255, 0.2);
+            background: rgba(0, 30, 50, 0.8);
+        }
+
+        input::placeholder {
+            color: rgba(0, 255, 65, 0.5);
+        }
+
+        .helptext {
+            display: block;
+            font-size: 11px;
+            color: rgba(0, 255, 65, 0.6);
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .errorlist {
+            list-style: none;
+            color: #ff0040;
+            font-size: 12px;
+            margin-top: 5px;
+            text-shadow: 0 0 5px #ff0040;
+        }
+
+        .errorlist li {
+            margin-bottom: 3px;
+        }
+
+        .errorlist li::before {
+            content: '⚠ ';
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00ff41 0%, #0ff 100%);
+            border: none;
+            border-radius: 5px;
+            color: #0a0e27;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 255, 65, 0.2);
+        }
+
+        .form-footer p {
+            color: rgba(0, 255, 65, 0.7);
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: #0ff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px #0ff;
+        }
+
+        .form-footer a:hover {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>Criar Conta</h1>
+        <div class="subtitle">[ GRABBER by Nordxzz ]</div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="error-message">{{ message }}</div>
+                {% else %}
+                    <div class="success-message">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">> Criar Conta</button>
+        </form>
+        
+        <div class="form-footer">
+            <p>Já tem uma conta? <a href="{% url 'login' %}">[ Fazer Login ]</a></p>
+        </div>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.animation = 'none';
+                setTimeout(() => { this.style.animation = ''; }, 10);
+            });
+        });
+    </script>
+</body>
+</html>

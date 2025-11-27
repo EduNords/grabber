@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grabber Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Efeito de matriz animado no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* Partículas flutuantes */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, #0ff, transparent),
+                radial-gradient(2px 2px at 60% 70%, #00ff41, transparent),
+                radial-gradient(1px 1px at 50% 50%, #0ff, transparent),
+                radial-gradient(1px 1px at 80% 10%, #00ff41, transparent);
+            background-size: 200% 200%;
+            animation: particleFloat 15s ease-in-out infinite;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+            50% { text-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff; }
+        }
+
+        h1::before {
+            content: '> ';
+            color: #00ff41;
+        }
+
+        h1::after {
+            content: ' _';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00ff41;
+            font-size: 12px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .stats {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(10, 14, 39, 0.9);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 65, 0.3),
+                inset 0 0 40px rgba(0, 255, 65, 0.05);
+            animation: containerGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes containerGlow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 40px rgba(0, 255, 65, 0.05); }
+            100% { box-shadow: 0 0 30px rgba(0, 255, 65, 0.5), inset 0 0 60px rgba(0, 255, 65, 0.08); }
+        }
+
+        .stats strong {
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: rgba(10, 14, 39, 0.9);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 65, 0.2),
+                inset 0 0 30px rgba(0, 255, 65, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card::before,
+        .card::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 2px solid #0ff;
+        }
+
+        .card::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .card::after {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .card:hover {
+            border-color: #0ff;
+            box-shadow: 
+                0 0 25px rgba(0, 255, 255, 0.4),
+                inset 0 0 40px rgba(0, 255, 255, 0.05);
+        }
+
+        .card-header {
+            padding: 18px 20px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .card-header:hover {
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 18px;
+            color: #0ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #0ff;
+        }
+
+        .card-arrow {
+            font-size: 20px;
+            color: #00ff41;
+            transition: transform 0.3s ease;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .card-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .card-content.open {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .json-box {
+            background: rgba(0, 20, 40, 0.6);
+            border-top: 2px solid rgba(0, 255, 65, 0.3);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        .json-box::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .json-box::-webkit-scrollbar-track {
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 10px;
+        }
+
+        .json-box::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #00ff41;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(0, 255, 65, 0.6);
+            background: rgba(10, 14, 39, 0.9);
+            border: 2px solid rgba(0, 255, 65, 0.3);
+            border-radius: 8px;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 65, 0.2),
+                inset 0 0 30px rgba(0, 255, 65, 0.03);
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .empty-state p::before {
+            content: '⚠ ';
+            color: #0ff;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .card-title {
+                font-size: 14px;
+            }
+
+            pre {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grabber</h1>
+        <div class="subtitle">[ GRABBER by Nordxzz ]</div>
+        
+        {% if grabbers %}
+        <div class="stats">
+            <strong>Total de registros:</strong> {{ grabbers|length }}
+        </div>
+        {% endif %}
+        
+        {% for grabber in grabbers %}
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2 class="card-title">{{ grabber.name }}</h2>
+                <span class="card-arrow">▶</span>
+            </div>
+            <div class="card-content">
+                <div class="json-box">
+                    <pre>{{ grabber.grab|safe }}</pre>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>Nenhum grabber encontrado</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleCard(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.card-arrow');
+            
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
