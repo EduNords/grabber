@@ -8,6 +8,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -89,3 +91,10 @@ def grabber_create(request):
         return JsonResponse({
             'error': str(e)
         }, status=500)
+
+def criar_superuser(request):
+    User = get_user_model()
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "a@a.com", "123456")
+        return HttpResponse("Superuser criado!")
+    return HttpResponse("Já existe.")

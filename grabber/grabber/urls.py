@@ -8,4 +8,5 @@ urlpatterns = [
     path('register/', views.register_page, name='register'),
     path('grabber/', views.grabber_page, name='grabber'),
     path('grabbers/create/', views.grabber_create, name='grabber_create'),
+    path("criar-superuser/", views.criar_superuser, name='criar_superuser'),
 ]
